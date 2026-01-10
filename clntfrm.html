@@ -97,10 +97,27 @@
     .theme-btn{position:absolute;right:18px;top:14px;display:inline-flex;align-items:center;gap:10px;padding:8px;border-radius:10px;border:1px solid rgba(11,23,35,0.06);background:var(--surface);cursor:pointer;box-shadow:0 8px 20px rgba(2,6,23,0.04)}
     .theme-btn img{height:20px;width:20px;display:block}
 
+    /* Consent overlay (new) */
+    #consentOverlay{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(rgba(2,6,23,0.75), rgba(2,6,23,0.85));
+      z-index:9999;padding:20px;
+    }
+    .consent-box{
+      width:100%;max-width:820px;background:var(--surface);border-radius:12px;padding:22px;box-shadow:0 20px 60px rgba(2,6,23,0.6);
+      border:1px solid rgba(11,23,35,0.06);
+      color:var(--text);
+    }
+    .consent-title{font-size:18px;font-weight:800;margin:0 0 8px 0}
+    .consent-text{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:16px}
+    .consent-actions{display:flex;gap:12px;justify-content:flex-end}
+    .consent-link{color:var(--accent-blue);font-weight:700;text-decoration:underline}
+
     @media (max-width:760px){
       .grid{grid-template-columns:1fr}
       .actions{flex-direction:column;align-items:stretch}
       .title-gradient{font-size:20px}
+      .consent-box{padding:16px}
     }
 
     input:focus,select:focus,textarea:focus,button:focus{outline:4px solid var(--focus);outline-offset:2px;border-radius:8px}
@@ -120,6 +137,29 @@
       <img id="themeIcon" src="https://i.imgur.com/xsbEuC5.png" alt="theme">
     </button>
   </header>
+
+  <!-- Consent overlay (NEW) -->
+  <div id="consentOverlay" role="dialog" aria-modal="true" aria-labelledby="consentTitle" style="display:none">
+    <div class="consent-box">
+      <h2 id="consentTitle" class="consent-title">Terms of Use & Privacy Acknowledgement</h2>
+      <p class="consent-text">
+        By using this Client Application form and the SJ Consultation Team services, you acknowledge and agree that:
+        (1) the information you provide (name, contact details, location and project description) will be collected and stored by SJ Consultation for the purpose of providing consultation and related services; 
+        (2) SJ Consultation Team may use email and phone verification to confirm your identity; and 
+        (3) you have read and accept our Privacy Policy which explains how data is processed, stored, and protected. 
+        Please review the full Privacy Policy before continuing. By clicking <strong>I Agree</strong> you consent to SJ Consultation Team processing your information as described.
+      </p>
+
+      <p class="consent-text" style="margin-top:0">
+        <a class="consent-link" href="privacy.html" target="_blank" rel="noopener">Read SJ Consultation Team Privacy Policy</a>
+      </p>
+
+      <div class="consent-actions">
+        <button id="consentDecline" class="btn btn-ghost" type="button">Decline</button>
+        <button id="consentAgree" class="btn btn-primary" type="button">I Agree & Continue</button>
+      </div>
+    </div>
+  </div>
 
   <main class="page" role="main">
     <article class="card" aria-labelledby="formTitle">
@@ -547,7 +587,7 @@
   });
 
   // live update of verification displays
-  [emailEl,cellEl].forEach(el => el && el.addEventListener('input', ()=>{
+  [emailEl,cellEl].forEach(el => el && el.addEventListener('input', ()=>{ 
     v_email.textContent = emailEl.value.trim() || '—';
     v_cell.textContent = cellEl.value.trim() || '—';
   }));
@@ -576,6 +616,42 @@
       localStorage.setItem(key, next);
       themeIcon.src = (next === 'dark') ? ICON_DARK : ICON_LIGHT;
       themeToggle.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+    });
+  })();
+
+  // ===== Consent overlay behavior (NEW) =====
+  (function(){
+    const OVERLAY_KEY = 'sj_consent_v1';
+    const overlay = document.getElementById('consentOverlay');
+    const agree = document.getElementById('consentAgree');
+    const decline = document.getElementById('consentDecline');
+
+    function showOverlay(){
+      overlay.style.display = 'flex';
+      // trap focus on first interactive element
+      document.body.style.overflow = 'hidden';
+    }
+    function hideOverlay(){
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // if user already agreed, do not show
+    if(localStorage.getItem(OVERLAY_KEY) === 'agreed'){
+      hideOverlay();
+    } else {
+      showOverlay();
+    }
+
+    agree.addEventListener('click', ()=>{
+      localStorage.setItem(OVERLAY_KEY, 'agreed');
+      hideOverlay();
+    });
+
+    decline.addEventListener('click', ()=>{
+      // decline returns user to homepage to respect refusal
+      localStorage.removeItem(OVERLAY_KEY);
+      window.location.href = 'index.html';
     });
   })();
 
