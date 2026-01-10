@@ -212,25 +212,62 @@
               <label for="phoneConsent" style="margin:0;font-weight:700">I consent to phone verification (recommended)</label>
             </div>
 
-            <div>
-              <label for="province">Province / Territory</label>
-              <select id="province" name="province" required>
-                <option value="">Select</option>
-                <option value="AB">Alberta</option>
-                <option value="BC">British Columbia</option>
-                <option value="MB">Manitoba</option>
-                <option value="NB">New Brunswick</option>
-                <option value="NL">Newfoundland and Labrador</option>
-                <option value="NS">Nova Scotia</option>
-                <option value="NT">Northwest Territories</option>
-                <option value="NU">Nunavut</option>
-                <option value="ON">Ontario</option>
-                <option value="PE">Prince Edward Island</option>
-                <option value="QC">Quebec</option>
-                <option value="SK">Saskatchewan</option>
-                <option value="YT">Yukon</option>
-              </select>
-            </div>
+            <div class="form-group">
+  <label for="province">Province / Territory</label>
+  <select id="province" name="province" required>
+    <option value="">Select</option>
+    <option value="AB">Alberta</option>
+    <option value="BC">British Columbia</option>
+    <option value="MB">Manitoba</option>
+    <option value="NB">New Brunswick</option>
+    <option value="NL">Newfoundland and Labrador</option>
+    <option value="NS">Nova Scotia</option>
+    <option value="NT">Northwest Territories</option>
+    <option value="NU">Nunavut</option>
+    <option value="ON">Ontario</option>
+    <option value="PE">Prince Edward Island</option>
+    <option value="QC">Quebec</option>
+    <option value="SK">Saskatchewan</option>
+    <option value="YT">Yukon</option>
+  </select>
+</div>
+
+<style>
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 360px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .form-group select {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2b3a4a, #1f5fbf);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-group select:focus {
+    border-color: #6ea8ff;
+    box-shadow: 0 0 0 2px rgba(110, 168, 255, 0.35);
+  }
+
+  .form-group select option {
+    color: #ffffff;
+    background-color: #1f2933;
+  }
+</style>
+
 
             <div class="full">
               <label for="city">City / Municipality</label>
@@ -862,5 +899,4 @@
   </script>
 </body>
 </html>
-
 
