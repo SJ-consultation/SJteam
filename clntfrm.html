@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,6 +17,9 @@
       --card-radius: 14px;
       --focus: rgba(11,116,255,0.14);
       --max-width: 780px;
+      --yellow: #fff4d9;
+      --yellow-border: #ffdd57;
+      --green: #e6ffef;
     }
 
     [data-theme="dark"]{
@@ -28,13 +32,12 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
     a{color:inherit}
-    /* Container + pt-6 (1.5rem) at top */
     main.page{
       min-height:100vh;
       display:flex;
       align-items:flex-start;
       justify-content:center;
-      padding:24px 16px 48px; /* pt-6 = 24px */
+      padding:24px 16px 48px;
     }
 
     .card{
@@ -47,7 +50,6 @@
       border:1px solid rgba(11,23,35,0.04);
     }
 
-    /* header/banner (photo6) */
     .card-banner{position:relative;height:160px;background:#0b74ff;overflow:hidden}
     .card-banner img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.02) saturate(0.98)}
     .banner-overlay{
@@ -91,13 +93,11 @@
     .error{padding:10px;border-radius:8px;background:#fff1f1;border:1px solid #ffbebe;color:#7a1200}
     .success{padding:10px;border-radius:8px;background:#e6ffef;border:1px solid #b7f0d0;color:#04632f}
 
-    /* header with theme toggle */
     header.sitehead{position:sticky;top:0;z-index:60;background:transparent;padding:12px 20px}
     .sitehead-inner{display:flex;align-items:center;justify-content:center;gap:12px}
     .theme-btn{position:absolute;right:18px;top:14px;display:inline-flex;align-items:center;gap:10px;padding:8px;border-radius:10px;border:1px solid rgba(11,23,35,0.06);background:var(--surface);cursor:pointer;box-shadow:0 8px 20px rgba(2,6,23,0.04)}
     .theme-btn img{height:20px;width:20px;display:block}
 
-    /* Consent overlay (new) */
     #consentOverlay{
       position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
       background:linear-gradient(rgba(2,6,23,0.75), rgba(2,6,23,0.85));
@@ -113,6 +113,21 @@
     .consent-actions{display:flex;gap:12px;justify-content:flex-end}
     .consent-link{color:var(--accent-blue);font-weight:700;text-decoration:underline}
 
+    .app-summary{
+      border-radius:10px;
+      padding:12px;
+      border:1px solid rgba(11,23,35,0.06);
+      background:linear-gradient(180deg, rgba(250,250,250,0.6), transparent);
+      margin-bottom:14px;
+    }
+    .app-status-pending{background:var(--yellow);border:1px solid var(--yellow-border);padding:8px;border-radius:8px;font-weight:700;color:#6b4b00}
+    .app-status-fulfilled{background:var(--green);border-radius:8px;padding:8px;font-weight:700;color:#044022}
+
+    .grayed{
+      opacity:0.55;
+      pointer-events:none;
+    }
+
     @media (max-width:760px){
       .grid{grid-template-columns:1fr}
       .actions{flex-direction:column;align-items:stretch}
@@ -124,10 +139,8 @@
   </style>
 </head>
 <body data-theme="light">
-  <!-- header with visible theme toggle -->
   <header class="sitehead" role="banner">
     <div class="sitehead-inner" aria-hidden="true">
-      <!-- centered brand label area (keeps visual balance) -->
       <div style="text-align:center">
         <div style="font-weight:800;color:var(--muted)">SJ Consultation Team</div>
       </div>
@@ -138,14 +151,13 @@
     </button>
   </header>
 
-  <!-- Consent overlay (NEW) -->
   <div id="consentOverlay" role="dialog" aria-modal="true" aria-labelledby="consentTitle" style="display:none">
     <div class="consent-box">
       <h2 id="consentTitle" class="consent-title">Terms of Use & Privacy Acknowledgement</h2>
       <p class="consent-text">
         By using this Client Application form and the SJ Consultation Team services, you acknowledge and agree that:
         (1) the information you provide (name, contact details, location and project description) will be collected and stored by SJ Consultation for the purpose of providing consultation and related services; 
-        (2) SJ Consultation Team may use email and phone verification to confirm your identity; and 
+        (2) SJ Consultation Team may use email and optional phone verification to confirm your identity; and 
         (3) you have read and accept our Privacy Policy which explains how data is processed, stored, and protected. 
         Please review the full Privacy Policy before continuing. By clicking <strong>I Agree</strong> you consent to SJ Consultation Team processing your information as described.
       </p>
@@ -163,18 +175,20 @@
 
   <main class="page" role="main">
     <article class="card" aria-labelledby="formTitle">
-      <!-- banner with your requested image (photo6) -->
       <div class="card-banner" role="img" aria-label="Consulting visual">
         <img src="https://i.imgur.com/t9Ojgbo.jpeg" alt="">
         <div class="banner-overlay">
           <div class="title-wrap">
             <h1 id="formTitle" class="title-gradient">Client Form</h1>
-            <div class="subtitle">Secure application — email & cell verification (Canada only)</div>
+            <div class="subtitle">Secure application — email verification required (Canada only)</div>
           </div>
         </div>
       </div>
 
       <div class="card-body">
+        <!-- Application summary area (shows existing application on this device) -->
+        <div id="existingAppArea" style="display:none" class="app-summary" aria-live="polite"></div>
+
         <form id="clientForm" novalidate>
           <div class="grid">
             <div>
@@ -183,13 +197,19 @@
             </div>
 
             <div>
-              <label for="email">Email</label>
+              <label for="email">Email (required)</label>
               <input id="email" name="email" type="email" required placeholder="name@domain.com">
             </div>
 
             <div>
-              <label for="cell">Cell phone number</label>
-              <input id="cell" name="cell" type="tel" required placeholder="+1 4165551234">
+              <label for="cell">Cell phone number (optional — check consent below to enable verification)</label>
+              <input id="cell" name="cell" type="tel" placeholder="+1 4165551234" aria-describedby="phoneHelp">
+              <div id="phoneHelp" class="muted">If you consent to phone verification we will send an SMS to confirm your number. This is recommended but optional.</div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;padding-top:20px">
+              <input id="phoneConsent" type="checkbox" />
+              <label for="phoneConsent" style="margin:0;font-weight:700">I consent to phone verification (recommended)</label>
             </div>
 
             <div>
@@ -231,11 +251,10 @@
           <div id="formMessage" class="message" aria-live="polite"></div>
 
           <div class="actions">
-            <button id="proceedBtn" class="btn btn-primary" type="button">Proceed & Verify</button>
+            <button id="proceedBtn" class="btn btn-primary" type="button">Proceed</button>
             <button id="resetBtn" class="btn btn-ghost" type="button">Reset</button>
           </div>
 
-          <!-- verification block (hidden until needed) -->
           <div id="verificationArea" class="verify-block" style="display:none" aria-hidden="true">
             <div style="font-weight:700;margin-bottom:6px">Verification</div>
 
@@ -254,11 +273,11 @@
               <div id="v_cell" style="font-weight:700">—</div>
               <div id="recaptcha-container"></div>
               <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-                <input id="smsCode" placeholder="123456" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(11,23,35,0.08)">
-                <button id="confirmSmsBtn" class="btn btn-primary" type="button">Confirm SMS</button>
+                <input id="smsCode" placeholder="123456" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(11,23,35,0.08)" disabled>
+                <button id="confirmSmsBtn" class="btn btn-primary" type="button" disabled>Confirm SMS</button>
               </div>
               <div style="margin-top:8px">
-                <button id="resendSmsBtn" class="btn btn-ghost" type="button">Resend SMS</button>
+                <button id="resendSmsBtn" class="btn btn-ghost" type="button" disabled>Resend SMS</button>
               </div>
               <div id="phoneStatus" style="margin-top:8px"></div>
             </div>
@@ -276,7 +295,17 @@
   </main>
 
   <script type="module">
-  // ========== Firebase + logic (modular SDK v10) ==========
+  /**
+   * Professional, readable script implementing:
+   * - Required email verification via Firebase Auth (modular SDK)
+   * - Optional phone verification only when user explicitly consents
+   * - No blocking "email already in use" error (handled gracefully)
+   * - One application per device until the request is fulfilled (stored locally)
+   * - On submit, application is saved to Firestore and the page refreshes; existing application is displayed and form is grayed out while pending
+   *
+   * Note: This file assumes Firebase project configuration already available.
+   */
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import {
     getAuth,
@@ -285,11 +314,23 @@
     RecaptchaVerifier,
     linkWithPhoneNumber,
     reload,
-    signOut
+    signOut,
+    sendPasswordResetEmail,
+    fetchSignInMethodsForEmail
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp,
+    getDoc,
+    doc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // Firebase config (same as your project)
+  // ----------------------------
+  // Firebase config (project)
+  // ----------------------------
   const firebaseConfig = {
     apiKey: "AIzaSyCfa_A6jcAlL-ey8TPl21rvgcrRKulh3qo",
     authDomain: "sjdeveloper.firebaseapp.com",
@@ -302,11 +343,12 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  // attach for Recaptcha internal access safety
-  window.auth = auth;
+  window.auth = auth; // accessible for recaptcha internals if needed
   const db = getFirestore(app);
 
-  // UI refs
+  // ----------------------------
+  // UI references
+  // ----------------------------
   const clientForm = document.getElementById('clientForm');
   const proceedBtn = document.getElementById('proceedBtn');
   const resetBtn = document.getElementById('resetBtn');
@@ -324,6 +366,7 @@
   const finalizeBtn = document.getElementById('finalizeBtn');
   const backBtn = document.getElementById('backBtn');
   const finalStatus = document.getElementById('finalStatus');
+  const existingAppArea = document.getElementById('existingAppArea');
 
   // form fields
   const fullNameEl = document.getElementById('fullName');
@@ -333,6 +376,7 @@
   const cityEl = document.getElementById('city');
   const postalEl = document.getElementById('postal');
   const detailsEl = document.getElementById('details');
+  const phoneConsentEl = document.getElementById('phoneConsent');
 
   // state
   let createdUser = null;
@@ -341,12 +385,13 @@
   let emailVerified = false;
   let recaptchaVerifier = null;
 
-  // Canada area codes
+  // constants
   const CANADA_AREA_CODES = new Set([
     "204","236","249","250","289","306","343","365","403","416","418","431","437","438","450","506",
     "514","519","548","579","581","587","604","613","639","647","672","705","709","742","743","778",
     "780","782","807","819","825","867","873","902","905"
   ]);
+  const LOCAL_APP_KEY = 'sj_application_id_v2'; // local storage key to track one-app-per-device
 
   // helpers
   function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -354,7 +399,6 @@
   function showSuccess(target, msg){ target.innerHTML = `<div class="success">${escapeHtml(msg)}</div>`; }
   function clearNode(target){ target.innerHTML = ''; }
 
-  // validations
   function isValidCanadianPostal(pc){
     if(!pc) return false;
     return /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/.test(pc.trim());
@@ -362,7 +406,7 @@
   function isValidCanadianPhone(raw){
     if(!raw) return false;
     const s = raw.replace(/[^\d\+]/g,'');
-    const normalized = s.startsWith('+') ? s : ('+' + s.replace(/^\+?/,''));
+    const normalized = s.startsWith('+') ? s : ('+' + s.replace(/^\+?/,'')); // ensure + prefix
     if(!/^\+1\d{10}$/.test(normalized)) return false;
     const area = normalized.substr(2,3);
     return CANADA_AREA_CODES.has(area);
@@ -373,7 +417,9 @@
     if(!fullNameEl.value.trim()) { showError(formMessage,'Full name is required.'); return false; }
     const email = emailEl.value.trim();
     if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(formMessage,'Valid email required.'); return false; }
-    if(!isValidCanadianPhone(cellEl.value.trim())) { showError(formMessage,'Cell must be a valid Canadian number (include +1).'); return false; }
+    if(phoneConsentEl.checked){
+      if(!isValidCanadianPhone(cellEl.value.trim())) { showError(formMessage,'Cell must be a valid Canadian number (include +1) if you opted into phone verification.'); return false; }
+    }
     if(!provinceEl.value) { showError(formMessage,'Select a province.'); return false; }
     if(!cityEl.value.trim()) { showError(formMessage,'City is required.'); return false; }
     if(!isValidCanadianPostal(postalEl.value.trim())) { showError(formMessage,'Valid Canadian postal code required (A1A 1A1).'); return false; }
@@ -383,7 +429,7 @@
     return true;
   }
 
-  // Recaptcha prepare (stable)
+  // recaptcha management
   function prepareRecaptcha(){
     try{
       if(window.recaptchaVerifier){
@@ -408,51 +454,186 @@
     return out;
   }
 
-  // Start verification flow
+  // UI utilities for existing application
+  async function showExistingApplication(docId){
+    try{
+      const ref = doc(db, 'applications', docId);
+      const snap = await getDoc(ref);
+      if(!snap.exists()){
+        localStorage.removeItem(LOCAL_APP_KEY);
+        existingAppArea.style.display = 'none';
+        return;
+      }
+      const data = snap.data();
+      const fulfilled = !!data.fulfilled;
+      const statusHtml = fulfilled
+        ? `<div class="app-status-fulfilled">Request fulfilled</div>`
+        : `<div class="app-status-pending">Request submitted — pending</div>`;
+
+      const html = `
+        ${statusHtml}
+        <div style="margin-top:10px;font-weight:700">Your application</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--muted)">
+          Below is the application submitted from this device. To prevent abuse, only one active request is allowed per device unless the request is fulfilled.
+        </div>
+        <div style="margin-top:10px;">
+          <div><strong>Name:</strong> ${escapeHtml(data.name || '')}</div>
+          <div><strong>Email:</strong> ${escapeHtml(data.email || '')}</div>
+          <div><strong>Phone:</strong> ${escapeHtml(data.cell || '—')}</div>
+          <div><strong>Province:</strong> ${escapeHtml(data.province || '')}</div>
+          <div><strong>City:</strong> ${escapeHtml(data.city || '')}</div>
+          <div><strong>Postal:</strong> ${escapeHtml(data.postal || '')}</div>
+          <div style="margin-top:6px"><strong>Details:</strong> ${escapeHtml(data.details || '')}</div>
+          <div style="margin-top:8px;color:var(--muted);font-size:12px">Application ID: ${escapeHtml(docId)}</div>
+        </div>
+      `;
+      existingAppArea.innerHTML = html;
+      existingAppArea.style.display = 'block';
+
+      // Gray out form if pending (not fulfilled)
+      if(!fulfilled){
+        clientForm.classList.add('grayed');
+        disableFormControls(true);
+        // show a prominent, professional note in message area
+        clearNode(formMessage);
+        formMessage.innerHTML = `<div class="note" style="font-weight:700;color:var(--muted)">To prevent abuse, only one active application is allowed per device. This device already has a pending request. You will be able to submit another request once the current one is fulfilled.</div>`;
+      } else {
+        // If fulfilled, form remains usable but we still show summary
+        clientForm.classList.remove('grayed');
+        disableFormControls(false);
+      }
+    } catch(err){
+      console.error('Failed to load existing application', err);
+      // if something wrong, clear local marker to avoid permanent lockout
+      localStorage.removeItem(LOCAL_APP_KEY);
+      existingAppArea.style.display = 'none';
+    }
+  }
+
+  function disableFormControls(disable){
+    // disable or enable interactive elements except the theme toggle and consent overlay
+    clientForm.querySelectorAll('input,textarea,select,button').forEach(el=>{
+      // keep verify area controls untouched when showing verification flow
+      if(el.id === 'proceedBtn' || el.id === 'resetBtn' || el.id === 'consentAgree' || el.id === 'consentDecline') return;
+      el.disabled = disable;
+    });
+  }
+
+  // on load: check for local existing application
+  (async function checkLocalApplicationOnLoad(){
+    try{
+      const appId = localStorage.getItem(LOCAL_APP_KEY);
+      if(appId){
+        await showExistingApplication(appId);
+      }
+    } catch(e){
+      console.error(e);
+    }
+  })();
+
+  // ========== Proceed/verify flow ==========
   proceedBtn.addEventListener('click', async () => {
     clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus);
+    // prevent new submission if local marker exists and pending (we rely on showExistingApplication to have grayed form)
+    const localAppId = localStorage.getItem(LOCAL_APP_KEY);
+    if(localAppId){
+      // attempt to re-check the status and show message instead of proceeding
+      await showExistingApplication(localAppId);
+      return;
+    }
+
     if(!validateForm()) return;
 
     // show values in verification area
     v_email.textContent = emailEl.value.trim();
-    v_cell.textContent = cellEl.value.trim();
+    v_cell.textContent = cellEl.value.trim() || '—';
 
     verificationArea.style.display = 'block';
     verificationArea.setAttribute('aria-hidden','false');
 
     proceedBtn.disabled = true;
     proceedBtn.textContent = 'Processing...';
+
+    // reset verification state
+    phoneLinked = false;
+    emailVerified = false;
+    finalizeBtn.disabled = true;
+    finalStatus.innerHTML = '';
+
     try{
+      // Try to create a user with temp password so we can send a verification email.
+      // If email already exists, do not present blocking error — handle gracefully by sending a recovery email and asking user to verify via that route.
       const tempPassword = generateTempPassword();
-      const userCredential = await createUserWithEmailAndPassword(auth, emailEl.value.trim(), tempPassword);
-      createdUser = userCredential.user;
 
-      // send email verification
-      await sendEmailVerification(createdUser);
-      showSuccess(emailStatus, 'Verification email sent. Click the link then press Check Email.');
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, emailEl.value.trim(), tempPassword);
+        createdUser = userCredential.user;
 
-      // send SMS via linkWithPhoneNumber
-      prepareRecaptcha();
-      const normalizedCell = cellEl.value.trim().replace(/[^\d\+]/g,'');
-      confirmationResult = await linkWithPhoneNumber(createdUser, normalizedCell, window.recaptchaVerifier);
-      showSuccess(phoneStatus, 'SMS sent. Enter the code and confirm.');
+        // send email verification
+        await sendEmailVerification(createdUser);
+        showSuccess(emailStatus, 'Verification email sent. Click the link in your inbox, then press "Check Email".');
 
-      // initialize finalize state
-      phoneLinked = false;
-      emailVerified = false;
-      finalizeBtn.disabled = true;
-      finalStatus.innerHTML = '';
+        // If phone consent is checked, start phone flow
+        if(phoneConsentEl.checked){
+          prepareRecaptcha();
+          const normalizedCell = cellEl.value.trim().replace(/[^\d\+]/g,'');
+          confirmationResult = await linkWithPhoneNumber(createdUser, normalizedCell, window.recaptchaVerifier);
+          showSuccess(phoneStatus, 'SMS sent. Enter the code and confirm.');
+          // enable SMS UI
+          smsCodeInput.disabled = false;
+          confirmSmsBtn.disabled = false;
+          resendSmsBtn.disabled = false;
+          smsCodeInput.value = '';
+        } else {
+          // phone not requested; keep SMS UI disabled
+          smsCodeInput.disabled = true;
+          confirmSmsBtn.disabled = true;
+          resendSmsBtn.disabled = true;
+          showSuccess(phoneStatus, 'Phone verification skipped by user (optional).');
+        }
+
+      } catch(innerErr){
+        // Handle email-already-in-use gracefully
+        if(innerErr && innerErr.code === 'auth/email-already-in-use'){
+          // Attempt to assist user by sending a password reset (non-blocking) so they can gain access to that account and verify
+          try {
+            await fetchSignInMethodsForEmail(auth, emailEl.value.trim()); // just to touch the API, may return methods
+          } catch(e){ /* ignore */ }
+          try {
+            await sendPasswordResetEmail(auth, emailEl.value.trim());
+            showSuccess(emailStatus, 'Email address already registered. We sent a recovery email — please check your inbox to access and verify your account, then return here and press "Check Email".');
+          } catch(sendErr){
+            showSuccess(emailStatus, 'Email already registered. Please sign in to that email account and verify. We were unable to send a recovery email at this time.');
+          }
+
+          // If user consented to phone verification and phone number present, attempt to start the phone flow using a temporary approach:
+          if(phoneConsentEl.checked){
+            try {
+              // We cannot link phone to an existing account without authenticating that user on client.
+              // Instead, prepare recaptcha and show instruction to the user to sign in to their account first to link phone.
+              prepareRecaptcha();
+              showError(phoneStatus, 'Phone verification requires account access. Sign in to the email account first (or reset password using the email link), then link your phone through the verification area.');
+            } catch(e){
+              showError(phoneStatus, 'Phone verification requires additional steps. Please sign in to your account first.');
+            }
+          } else {
+            // no phone consent; user can still proceed once they verify email via the account.
+            showSuccess(phoneStatus, 'Phone verification not requested.');
+          }
+        } else {
+          // other errors
+          showError(formMessage, 'Failed to start verification: ' + (innerErr.message || innerErr.code || innerErr));
+          // hide verification area on failure
+          verificationArea.style.display = 'none';
+          verificationArea.setAttribute('aria-hidden','true');
+        }
+      }
+
+      // keep finalize disabled until email verified and (phone linked or phone skipped)
+      updateFinalizeState();
     } catch(err){
       console.error(err);
-      if(err && err.code === 'auth/email-already-in-use'){
-        showError(formMessage,'Email already registered. Check inbox for verification.');
-      } else if(err && (err.code === 'auth/invalid-phone-number' || err.code === 'auth/missing-phone-number')){
-        showError(formMessage,'Invalid phone number. Include +1 and a valid Canadian area code.');
-      } else {
-        showError(formMessage,'Failed to start verification: ' + (err.message || err.code || err));
-      }
-      // cleanup
-      try{ await signOut(auth); }catch(e){}
+      showError(formMessage,'Failed to start verification: ' + (err.message || err.code || err));
       verificationArea.style.display = 'none';
       verificationArea.setAttribute('aria-hidden','true');
     } finally {
@@ -461,7 +642,7 @@
     }
   });
 
-  // Confirm SMS
+  // SMS confirm
   confirmSmsBtn.addEventListener('click', async () => {
     clearNode(phoneStatus);
     const code = smsCodeInput.value.trim();
@@ -471,7 +652,7 @@
       const res = await confirmationResult.confirm(code);
       phoneLinked = true;
       showSuccess(phoneStatus, 'Phone verified.');
-      // reload user to check emailVerified
+      // reload user to update emailVerified
       await reload(auth.currentUser);
       emailVerified = !!auth.currentUser.emailVerified;
       if(emailVerified) showSuccess(emailStatus, 'Email verified.');
@@ -498,7 +679,7 @@
     }
   });
 
-  // Resend email
+  // Resend email verification
   resendEmailBtn.addEventListener('click', async () => {
     clearNode(emailStatus);
     try{
@@ -515,10 +696,19 @@
   checkEmailBtn.addEventListener('click', async () => {
     clearNode(emailStatus);
     try{
-      await reload(auth.currentUser);
-      emailVerified = !!auth.currentUser.emailVerified;
+      if(auth.currentUser){
+        await reload(auth.currentUser);
+        emailVerified = !!auth.currentUser.emailVerified;
+      } else {
+        // no createdUser in this session (e.g., existing registered account flow)
+        // attempt to reload current user if any
+        try { await reload(auth.currentUser); } catch(e){}
+        emailVerified = auth.currentUser ? !!auth.currentUser.emailVerified : false;
+      }
+
       if(emailVerified) showSuccess(emailStatus,'Email verified.');
-      else showError(emailStatus,'Email not verified yet. Click the link in the email.');
+      else showError(emailStatus,'Email not verified yet. Click the link in the email and then press Check Email.');
+
       updateFinalizeState();
     } catch(err){
       console.error(err);
@@ -527,41 +717,51 @@
   });
 
   function updateFinalizeState(){
-    if(phoneLinked && emailVerified){
+    // finalize enabled when email verified AND (phone linked OR phone verification not requested)
+    const phoneRequired = phoneConsentEl.checked;
+    if(emailVerified && (!phoneRequired || phoneLinked)){
       finalizeBtn.disabled = false;
       finalStatus.innerHTML = '';
     } else {
       finalizeBtn.disabled = true;
       let missing = [];
-      if(!phoneLinked) missing.push('phone');
       if(!emailVerified) missing.push('email');
+      if(phoneRequired && !phoneLinked) missing.push('phone');
       finalStatus.innerHTML = `<div class="muted small">Waiting for: ${missing.join(' & ')}</div>`;
     }
   }
 
-  // Finalize: validate again & save to Firestore
+  // Finalize application: validate once more, write to Firestore, store local marker, refresh to show summary
   finalizeBtn.addEventListener('click', async () => {
     clearNode(finalStatus);
     if(!validateForm()){ showError(finalStatus,'Validation failed — correct fields and try again.'); return; }
     finalizeBtn.disabled = true; finalizeBtn.textContent = 'Submitting...';
+
     try{
-      const doc = {
+      const docObj = {
         name: fullNameEl.value.trim(),
         email: emailEl.value.trim(),
-        cell: cellEl.value.trim().replace(/[^\d\+]/g,''),
+        cell: (cellEl.value.trim() || '').replace(/[^\d\+]/g,''),
         province: provinceEl.value,
         city: cityEl.value.trim(),
         postal: postalEl.value.trim().toUpperCase(),
         details: detailsEl.value.trim(),
-        emailVerified: !!auth.currentUser.emailVerified,
+        emailVerified: !!auth.currentUser?.emailVerified,
         phoneLinked: !!phoneLinked,
+        fulfilled: false,
         createdAt: serverTimestamp()
       };
-      await addDoc(collection(db, 'applications'), doc);
-      showSuccess(finalStatus, 'Application submitted. SJ Consultation Team will review and contact you.');
-      // sign out and lock fields for security
-      try{ await signOut(auth); }catch(e){}
-      clientForm.querySelectorAll('input,textarea,select,button').forEach(el=>el.disabled = true);
+
+      const ref = await addDoc(collection(db, 'applications'), docObj);
+      // save the doc id locally as the device's active application
+      localStorage.setItem(LOCAL_APP_KEY, ref.id);
+
+      showSuccess(finalStatus, 'Application submitted. The page will refresh and your application will be shown.');
+      // sign out for safety
+      try{ await signOut(auth); } catch(e){/*ignore*/}
+
+      // short delay to allow UX to register message, then reload to show summary
+      setTimeout(()=> location.reload(), 900);
     } catch(err){
       console.error(err);
       showError(finalStatus,'Failed to submit: ' + (err.message || err.code || err));
@@ -577,16 +777,19 @@
     try{ smsCodeInput.value = ''; }catch(e){}
   });
 
-  // Reset clears form and signs out
+  // Reset clears form and signs out (and clears local session markers only — does not delete stored application)
   resetBtn.addEventListener('click', async () => {
     clientForm.reset();
     clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus);
     verificationArea.style.display = 'none';
     verificationArea.setAttribute('aria-hidden','true');
+    smsCodeInput.disabled = true;
+    confirmSmsBtn.disabled = true;
+    resendSmsBtn.disabled = true;
     try{ await signOut(auth); }catch(e){}
   });
 
-  // live update of verification displays
+  // live update v_email/v_cell
   [emailEl,cellEl].forEach(el => el && el.addEventListener('input', ()=>{ 
     v_email.textContent = emailEl.value.trim() || '—';
     v_cell.textContent = cellEl.value.trim() || '—';
@@ -597,7 +800,7 @@
     try{ await signOut(auth); }catch(e){}
   });
 
-  // ========== Theme toggle (clear visible icon) ==========
+  // Theme toggle behavior
   (function(){
     const key = 'sj_theme';
     const themeToggle = document.getElementById('themeToggle');
@@ -619,7 +822,7 @@
     });
   })();
 
-  // ===== Consent overlay behavior (NEW) =====
+  // Consent overlay behavior (retained but we will not show the overlay if already agreed)
   (function(){
     const OVERLAY_KEY = 'sj_consent_v1';
     const overlay = document.getElementById('consentOverlay');
@@ -628,7 +831,6 @@
 
     function showOverlay(){
       overlay.style.display = 'flex';
-      // trap focus on first interactive element
       document.body.style.overflow = 'hidden';
     }
     function hideOverlay(){
@@ -636,7 +838,6 @@
       document.body.style.overflow = '';
     }
 
-    // if user already agreed, do not show
     if(localStorage.getItem(OVERLAY_KEY) === 'agreed'){
       hideOverlay();
     } else {
@@ -649,12 +850,16 @@
     });
 
     decline.addEventListener('click', ()=>{
-      // decline returns user to homepage to respect refusal
       localStorage.removeItem(OVERLAY_KEY);
       window.location.href = 'index.html';
     });
   })();
 
+  // Utility: if an administrator later marks an application as fulfilled, the user will be allowed to submit a new request.
+  // (Optional admin flow would call updateDoc(doc(db,'applications',id), {fulfilled: true}) externally.)
+
+  // End script
   </script>
 </body>
 </html>
+
