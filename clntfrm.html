@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -152,17 +151,21 @@
   </header>
 
   <div id="consentOverlay" role="dialog" aria-modal="true" aria-labelledby="consentTitle" style="display:none">
-    <div class="consent-box">
+    <div class="consent-box" role="document">
       <h2 id="consentTitle" class="consent-title">Terms of Use & Privacy Acknowledgement</h2>
       <p class="consent-text">
-        By using this Client Application form and the SJ Consultation Team services, you acknowledge and agree that:
-        (1) the information you provide (name, contact details, location and project description) will be collected and stored by SJ Consultation for the purpose of providing consultation and related services; 
-        (2) SJ Consultation Team may use email and optional phone verification to confirm your identity; and 
-        (3) you have read and accept our Privacy Policy which explains how data is processed, stored, and protected. 
-        Please review the full Privacy Policy before continuing. By clicking <strong>I Agree</strong> you consent to SJ Consultation Team processing your information as described.
+        By using this Client Application form and SJ Consultation Team services you acknowledge and agree that:
+        (1) the information you provide (name, contact details, location and project description) will be collected and used to evaluate and provide consultation services; 
+        (2) SJ Consultation Team may use email verification and optional phone verification to confirm your identity; and
+        (3) you must be at least 18 years old to access or submit services via this form. Due to PIPEDA (Personal Information Protection and Electronic Documents Act).
+  Do not proceed if you are under 18.
       </p>
 
       <p class="consent-text" style="margin-top:0">
+        Please review our Privacy Policy for full details on how we process, store, and protect your information.
+      </p>
+
+      <p style="margin:0 0 12px 0">
         <a class="consent-link" href="privacy.html" target="_blank" rel="noopener">Read SJ Consultation Team Privacy Policy</a>
       </p>
 
@@ -198,18 +201,18 @@
 
             <div>
               <label for="email">Email (required)</label>
-              <input id="email" name="email" type="email" required placeholder="name@domain.com">
+              <input id="email" name="email" type="email" required placeholder="name@domain.com" autocomplete="email">
             </div>
 
             <div>
-              <label for="cell">Cell phone number (optional, consent only(recommended)</label>
+              <label for="cell">Cell phone number (optional, consent only)</label>
               <input id="cell" name="cell" type="tel" placeholder="+1 4165551234" aria-describedby="phoneHelp">
-              <div id="phoneHelp" class="muted">If you consent to phone verification we will send an SMS to confirm your number. This is recommended but optional.</div>
+              <div id="phoneHelp" class="muted">If you consent to phone verification we will send an SMS to confirm your number. This is optional.</div>
             </div>
 
             <div style="display:flex;align-items:center;gap:10px;padding-top:20px">
               <input id="phoneConsent" type="checkbox" />
-              <label for="phoneConsent" style="margin:0;font-weight:700">I consent to phone verification (recommended)</label>
+              <label for="phoneConsent" style="margin:0;font-weight:700">I consent to phone verification (optional)</label>
             </div>
 
             <div class="form-group">
@@ -231,62 +234,6 @@
     <option value="YT">Yukon</option>
   </select>
 </div>
-
-<style>
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-width: 360px;
-  }
-
-  .form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ffffff;
-  }
-
-  .form-group select {
-    padding: 10px 12px;
-    font-size: 14px;
-    color: #ffffff;
-    background: linear-gradient(135deg, #2b3a4a, #1f5fbf);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
-    font-weight: 600; /* bold text for all options */
-    appearance: none; /* remove default OS styling for select */
-  }
-
-  .form-group select:focus {
-    border-color: #6ea8ff;
-    box-shadow: 0 0 0 2px rgba(110, 168, 255, 0.35);
-  }
-
-  .form-group select option {
-    color: #ffffff;
-    background-color: #1f2933;
-    font-weight: 600;
-  }
-
-  /* Quebec epic golden-diamond inside the options box */
-  .form-group select option.golden {
-    color: #ffd700; /* golden text */
-    font-weight: 900; /* extra bold */
-    background: linear-gradient(135deg, #ffd700, #fff8b0) !important; /* force gold-diamond gradient */
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
-  }
-
-  /* When Quebec is selected, the select box itself glows golden */
-  .form-group select:has(option[value="QC"]:checked) {
-    background: linear-gradient(135deg, #ffd700, #fff8b0);
-    color: #ffffff;
-    border: 1px solid #ffea70;
-    box-shadow: 0 0 12px 3px rgba(255, 215, 0, 0.8);
-  }
-</style>
-
 
             <div class="full">
               <label for="city">City / Municipality</label>
@@ -322,20 +269,33 @@
                 <button id="resendEmailBtn" class="btn btn-ghost" type="button">Resend Email</button>
               </div>
               <div id="emailStatus" style="margin-top:8px"></div>
+
+              <!-- Sign-in prompt shown when email already registered -->
+              <div id="existingAccountPrompt" style="margin-top:12px;display:none">
+                <label for="existingPassword" style="font-weight:700;margin-bottom:6px">Account password</label>
+                <input id="existingPassword" type="password" placeholder="Enter your password to sign in" autocomplete="current-password">
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button id="signInBtn" class="btn btn-primary" type="button">Sign in</button>
+                  <button id="forgotPassBtn" class="btn btn-ghost" type="button">Forgot password</button>
+                </div>
+                <div id="signinStatus" style="margin-top:8px"></div>
+              </div>
             </div>
 
-            <div>
-              <div class="muted">Cell:</div>
-              <div id="v_cell" style="font-weight:700">—</div>
-              <div id="recaptcha-container"></div>
-              <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-                <input id="smsCode" placeholder="123456" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(11,23,35,0.08)" disabled>
-                <button id="confirmSmsBtn" class="btn btn-primary" type="button" disabled>Confirm SMS</button>
+            <div id="phoneBlock">
+              <div>
+                <div class="muted">Cell:</div>
+                <div id="v_cell" style="font-weight:700">—</div>
+                <div id="recaptcha-container"></div>
+                <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                  <input id="smsCode" placeholder="123456" style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(11,23,35,0.08)" disabled>
+                  <button id="confirmSmsBtn" class="btn btn-primary" type="button" disabled>Confirm SMS</button>
+                </div>
+                <div style="margin-top:8px">
+                  <button id="resendSmsBtn" class="btn btn-ghost" type="button" disabled>Resend SMS</button>
+                </div>
+                <div id="phoneStatus" style="margin-top:8px"></div>
               </div>
-              <div style="margin-top:8px">
-                <button id="resendSmsBtn" class="btn btn-ghost" type="button" disabled>Resend SMS</button>
-              </div>
-              <div id="phoneStatus" style="margin-top:8px"></div>
             </div>
 
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
@@ -352,14 +312,14 @@
 
   <script type="module">
   /**
-   * Professional, readable script implementing:
-   * - Required email verification via Firebase Auth (modular SDK)
-   * - Optional phone verification only when user explicitly consents
-   * - No blocking "email already in use" error (handled gracefully)
-   * - One application per device until the request is fulfilled (stored locally)
-   * - On submit, application is saved to Firestore and the page refreshes; existing application is displayed and form is grayed out while pending
+   * Updated script:
+   * - If email exists: prompt for password sign-in (no automatic recovery)
+   * - Phone verification UI hidden unless consent checked
+   * - Immediately show submitted application summary on finalize (no confusing wording)
+   * - One active request per device unless fulfilled or expired after 30 days
+   * - Consent text made professional and requires adult (18+) access
    *
-   * Note: This file assumes Firebase project configuration already available.
+   * Assumes firebase config present and correct.
    */
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -372,7 +332,8 @@
     reload,
     signOut,
     sendPasswordResetEmail,
-    fetchSignInMethodsForEmail
+    fetchSignInMethodsForEmail,
+    signInWithEmailAndPassword
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
   import {
     getFirestore,
@@ -399,7 +360,7 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  window.auth = auth; // accessible for recaptcha internals if needed
+  window.auth = auth;
   const db = getFirestore(app);
 
   // ----------------------------
@@ -423,6 +384,16 @@
   const backBtn = document.getElementById('backBtn');
   const finalStatus = document.getElementById('finalStatus');
   const existingAppArea = document.getElementById('existingAppArea');
+
+  // added controls for existing-account sign-in
+  const existingAccountPrompt = document.getElementById('existingAccountPrompt');
+  const existingPassword = document.getElementById('existingPassword');
+  const signInBtn = document.getElementById('signInBtn');
+  const forgotPassBtn = document.getElementById('forgotPassBtn');
+  const signinStatus = document.getElementById('signinStatus');
+
+  // phone block
+  const phoneBlock = document.getElementById('phoneBlock');
 
   // form fields
   const fullNameEl = document.getElementById('fullName');
@@ -448,6 +419,8 @@
     "780","782","807","819","825","867","873","902","905"
   ]);
   const LOCAL_APP_KEY = 'sj_application_id_v2'; // local storage key to track one-app-per-device
+  const LOCAL_APP_META = 'sj_application_meta_v2'; // store timestamp locally for robust expiration check
+  const REQUEST_EXPIRY_DAYS = 30;
 
   // helpers
   function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -510,18 +483,52 @@
     return out;
   }
 
+  function daysBetween(dateA, dateB){
+    const ms = Math.abs(dateA - dateB);
+    return ms / (1000 * 60 * 60 * 24);
+  }
+
+  function isExpiredTimestamp(ts){
+    if(!ts) return true;
+    // ts may be Firestore Timestamp or JS Date
+    let d;
+    try{
+      if(typeof ts.toDate === 'function') d = ts.toDate();
+      else d = new Date(ts);
+    }catch(e){ return true; }
+    return daysBetween(Date.now(), d) >= REQUEST_EXPIRY_DAYS;
+  }
+
   // UI utilities for existing application
   async function showExistingApplication(docId){
     try{
+      // fetch document
       const ref = doc(db, 'applications', docId);
       const snap = await getDoc(ref);
       if(!snap.exists()){
+        // server doc gone; clear local marker
         localStorage.removeItem(LOCAL_APP_KEY);
+        localStorage.removeItem(LOCAL_APP_META);
         existingAppArea.style.display = 'none';
         return;
       }
       const data = snap.data();
+      // handle expiry: if createdAt older than expiry and not fulfilled, clear marker and permit new requests
+      const createdAt = data.createdAt;
       const fulfilled = !!data.fulfilled;
+      const expired = !fulfilled && isExpiredTimestamp(createdAt);
+
+      if(expired){
+        localStorage.removeItem(LOCAL_APP_KEY);
+        localStorage.removeItem(LOCAL_APP_META);
+        existingAppArea.style.display = 'none';
+        clientForm.classList.remove('grayed');
+        disableFormControls(false);
+        clearNode(formMessage);
+        formMessage.innerHTML = `<div class="note" style="font-weight:700;color:var(--muted)">A previous application from this device has expired. You may submit a new request.</div>`;
+        return;
+      }
+
       const statusHtml = fulfilled
         ? `<div class="app-status-fulfilled">Request fulfilled</div>`
         : `<div class="app-status-pending">Request submitted — pending</div>`;
@@ -530,7 +537,7 @@
         ${statusHtml}
         <div style="margin-top:10px;font-weight:700">Your application</div>
         <div style="margin-top:8px;font-size:13px;color:var(--muted)">
-          Below is the application submitted from this device. To prevent abuse, only one active request is allowed per device unless the request is fulfilled.
+          Below is the application submitted from this device. Only one active request is allowed per device.
         </div>
         <div style="margin-top:10px;">
           <div><strong>Name:</strong> ${escapeHtml(data.name || '')}</div>
@@ -550,18 +557,17 @@
       if(!fulfilled){
         clientForm.classList.add('grayed');
         disableFormControls(true);
-        // show a prominent, professional note in message area
         clearNode(formMessage);
-        formMessage.innerHTML = `<div class="note" style="font-weight:700;color:var(--muted)">To prevent abuse, only one active application is allowed per device. This device already has a pending request. You will be able to submit another request once the current one is fulfilled.</div>`;
+        formMessage.innerHTML = `<div class="note" style="font-weight:700;color:var(--muted)">To prevent duplicate requests, only one active application is allowed per device. This device has a pending request.</div>`;
       } else {
-        // If fulfilled, form remains usable but we still show summary
         clientForm.classList.remove('grayed');
         disableFormControls(false);
       }
     } catch(err){
       console.error('Failed to load existing application', err);
-      // if something wrong, clear local marker to avoid permanent lockout
+      // on error clear local marker to avoid permanent lockout
       localStorage.removeItem(LOCAL_APP_KEY);
+      localStorage.removeItem(LOCAL_APP_META);
       existingAppArea.style.display = 'none';
     }
   }
@@ -569,13 +575,13 @@
   function disableFormControls(disable){
     // disable or enable interactive elements except the theme toggle and consent overlay
     clientForm.querySelectorAll('input,textarea,select,button').forEach(el=>{
-      // keep verify area controls untouched when showing verification flow
+      // allow verification area controls to remain enabled while in verification flow (we control them separately)
       if(el.id === 'proceedBtn' || el.id === 'resetBtn' || el.id === 'consentAgree' || el.id === 'consentDecline') return;
       el.disabled = disable;
     });
   }
 
-  // on load: check for local existing application
+  // on load: check for local existing application and its expiry
   (async function checkLocalApplicationOnLoad(){
     try{
       const appId = localStorage.getItem(LOCAL_APP_KEY);
@@ -584,16 +590,33 @@
       }
     } catch(e){
       console.error(e);
+    } finally {
+      // ensure phone block visibility matches consent on load
+      togglePhoneBlock();
     }
   })();
 
+  // toggle phone UI block based on consent
+  function togglePhoneBlock(){
+    if(phoneConsentEl.checked){
+      phoneBlock.style.display = 'block';
+    } else {
+      phoneBlock.style.display = 'none';
+      // ensure SMS controls disabled when hidden
+      smsCodeInput.disabled = true;
+      confirmSmsBtn.disabled = true;
+      resendSmsBtn.disabled = true;
+      clearNode(phoneStatus);
+    }
+  }
+  phoneConsentEl.addEventListener('change', togglePhoneBlock);
+
   // ========== Proceed/verify flow ==========
   proceedBtn.addEventListener('click', async () => {
-    clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus);
-    // prevent new submission if local marker exists and pending (we rely on showExistingApplication to have grayed form)
+    clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus); clearNode(signinStatus);
+    // prevent new submission if local marker exists and pending (showing existing summary handles blocking)
     const localAppId = localStorage.getItem(LOCAL_APP_KEY);
     if(localAppId){
-      // attempt to re-check the status and show message instead of proceeding
       await showExistingApplication(localAppId);
       return;
     }
@@ -615,86 +638,131 @@
     emailVerified = false;
     finalizeBtn.disabled = true;
     finalStatus.innerHTML = '';
+    existingAccountPrompt.style.display = 'none';
+    clearNode(signinStatus);
 
     try{
-      // Try to create a user with temp password so we can send a verification email.
-      // If email already exists, do not present blocking error — handle gracefully by sending a recovery email and asking user to verify via that route.
-      const tempPassword = generateTempPassword();
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, emailEl.value.trim(), tempPassword);
-        createdUser = userCredential.user;
-
-        // send email verification
-        await sendEmailVerification(createdUser);
-        showSuccess(emailStatus, 'Verification email sent. Click the link in your inbox, then press "Check Email".');
-
-        // If phone consent is checked, start phone flow
-        if(phoneConsentEl.checked){
-          prepareRecaptcha();
-          const normalizedCell = cellEl.value.trim().replace(/[^\d\+]/g,'');
-          confirmationResult = await linkWithPhoneNumber(createdUser, normalizedCell, window.recaptchaVerifier);
-          showSuccess(phoneStatus, 'SMS sent. Enter the code and confirm.');
-          // enable SMS UI
-          smsCodeInput.disabled = false;
-          confirmSmsBtn.disabled = false;
-          resendSmsBtn.disabled = false;
-          smsCodeInput.value = '';
-        } else {
-          // phone not requested; keep SMS UI disabled
-          smsCodeInput.disabled = true;
-          confirmSmsBtn.disabled = true;
-          resendSmsBtn.disabled = true;
-          showSuccess(phoneStatus, 'Phone verification skipped by user (optional).');
-        }
-
-      } catch(innerErr){
-        // Handle email-already-in-use gracefully
-        if(innerErr && innerErr.code === 'auth/email-already-in-use'){
-          // Attempt to assist user by sending a password reset (non-blocking) so they can gain access to that account and verify
-          try {
-            await fetchSignInMethodsForEmail(auth, emailEl.value.trim()); // just to touch the API, may return methods
-          } catch(e){ /* ignore */ }
-          try {
-            await sendPasswordResetEmail(auth, emailEl.value.trim());
-            showSuccess(emailStatus, 'Email address already registered. We sent a recovery email — please check your inbox to access and verify your account, then return here and press "Check Email".');
-          } catch(sendErr){
-            showSuccess(emailStatus, 'Email already registered. Please sign in to that email account and verify. We were unable to send a recovery email at this time.');
-          }
-
-          // If user consented to phone verification and phone number present, attempt to start the phone flow using a temporary approach:
-          if(phoneConsentEl.checked){
-            try {
-              // We cannot link phone to an existing account without authenticating that user on client.
-              // Instead, prepare recaptcha and show instruction to the user to sign in to their account first to link phone.
-              prepareRecaptcha();
-              showError(phoneStatus, 'Phone verification requires account access. Sign in to the email account first (or reset password using the email link), then link your phone through the verification area.');
-            } catch(e){
-              showError(phoneStatus, 'Phone verification requires additional steps. Please sign in to your account first.');
-            }
-          } else {
-            // no phone consent; user can still proceed once they verify email via the account.
-            showSuccess(phoneStatus, 'Phone verification not requested.');
-          }
-        } else {
-          // other errors
-          showError(formMessage, 'Failed to start verification: ' + (innerErr.message || innerErr.code || innerErr));
-          // hide verification area on failure
-          verificationArea.style.display = 'none';
-          verificationArea.setAttribute('aria-hidden','true');
-        }
+      // First: check whether the email already has an account (non-blocking API)
+      const email = emailEl.value.trim();
+      let methods = [];
+      try{
+        methods = await fetchSignInMethodsForEmail(auth, email);
+      } catch(e){
+        // ignore if API fails; we'll proceed trying to create
       }
 
-      // keep finalize disabled until email verified and (phone linked or phone skipped)
+      if(Array.isArray(methods) && methods.length > 0){
+        // email already registered: prompt for password sign-in (user requested behavior)
+        showError(emailStatus, 'An account already exists for this email. Please sign in to continue.');
+        existingAccountPrompt.style.display = 'block';
+        // show sign-in prompt; user must sign in to proceed with linking phone and verifying email status
+        createdUser = null;
+        proceedBtn.disabled = false;
+        proceedBtn.textContent = 'Proceed';
+        return;
+      }
+
+      // If not registered, create a new temp-account so we can send verification email and optionally link phone
+      const tempPassword = generateTempPassword();
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+      createdUser = userCredential.user;
+
+      // send email verification
+      await sendEmailVerification(createdUser);
+      showSuccess(emailStatus, 'Verification email sent. Click the link in your inbox, then press "Check Email".');
+
+      // If phone consent is checked, start phone flow
+      if(phoneConsentEl.checked){
+        prepareRecaptcha();
+        const normalizedCell = cellEl.value.trim().replace(/[^\d\+]/g,'');
+        confirmationResult = await linkWithPhoneNumber(createdUser, normalizedCell, window.recaptchaVerifier);
+        showSuccess(phoneStatus, 'SMS sent. Enter the code and confirm.');
+        smsCodeInput.disabled = false;
+        confirmSmsBtn.disabled = false;
+        resendSmsBtn.disabled = false;
+        smsCodeInput.value = '';
+      } else {
+        smsCodeInput.disabled = true;
+        confirmSmsBtn.disabled = true;
+        resendSmsBtn.disabled = true;
+        showSuccess(phoneStatus, 'Phone verification not requested.');
+      }
+
       updateFinalizeState();
-    } catch(err){
-      console.error(err);
-      showError(formMessage,'Failed to start verification: ' + (err.message || err.code || err));
+    } catch(innerErr){
+      console.error(innerErr);
+      showError(formMessage, 'Failed to start verification: ' + (innerErr && (innerErr.message || innerErr.code)) );
       verificationArea.style.display = 'none';
       verificationArea.setAttribute('aria-hidden','true');
     } finally {
       proceedBtn.disabled = false;
-      proceedBtn.textContent = 'Proceed & Verify';
+      proceedBtn.textContent = 'Proceed';
+    }
+  });
+
+  // sign-in flow when existing account detected
+  signInBtn.addEventListener('click', async () => {
+    clearNode(signinStatus); clearNode(emailStatus);
+    const email = emailEl.value.trim();
+    const pass = existingPassword.value || '';
+    if(!pass){
+      showError(signinStatus, 'Enter your account password to sign in.');
+      return;
+    }
+    signInBtn.disabled = true; signInBtn.textContent = 'Signing in...';
+    try{
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      createdUser = cred.user;
+      // on successful sign-in, evaluate verification state and optionally start phone linking
+      await reload(auth.currentUser);
+      emailVerified = !!auth.currentUser.emailVerified;
+      if(emailVerified) showSuccess(emailStatus, 'Email verified.');
+      else showSuccess(emailStatus, 'Signed in. Please verify your email by following the link sent to your inbox.');
+
+      // If phone consent is set, allow phone linking flow
+      if(phoneConsentEl.checked){
+        prepareRecaptcha();
+        try {
+          const normalizedCell = cellEl.value.trim().replace(/[^\d\+]/g,'');
+          confirmationResult = await linkWithPhoneNumber(createdUser, normalizedCell, window.recaptchaVerifier);
+          showSuccess(phoneStatus, 'SMS sent. Enter the code and confirm.');
+          smsCodeInput.disabled = false;
+          confirmSmsBtn.disabled = false;
+          resendSmsBtn.disabled = false;
+          smsCodeInput.value = '';
+        } catch(e){
+          // linking may fail if phone already in use or other reason
+          console.error(e);
+          showError(phoneStatus, 'Phone linking step failed. You may link your phone from account settings after signing in.');
+        }
+      } else {
+        smsCodeInput.disabled = true;
+        confirmSmsBtn.disabled = true;
+        resendSmsBtn.disabled = true;
+        showSuccess(phoneStatus, 'Phone verification not requested.');
+      }
+
+      updateFinalizeState();
+      existingAccountPrompt.style.display = 'none';
+    } catch(err){
+      console.error(err);
+      showError(signinStatus, 'Sign-in failed. If you forgot your password, click "Forgot password".');
+    } finally {
+      signInBtn.disabled = false; signInBtn.textContent = 'Sign in';
+    }
+  });
+
+  forgotPassBtn.addEventListener('click', async () => {
+    clearNode(signinStatus);
+    const email = emailEl.value.trim();
+    if(!email){ showError(signinStatus, 'Enter your email address first.'); return; }
+    try{
+      await sendPasswordResetEmail(auth, email);
+      showSuccess(signinStatus, 'Password recovery email sent. Follow the instructions in your inbox to regain access.');
+    } catch(err){
+      console.error(err);
+      showError(signinStatus, 'Unable to send recovery email at this time.');
     }
   });
 
@@ -739,7 +807,10 @@
   resendEmailBtn.addEventListener('click', async () => {
     clearNode(emailStatus);
     try{
-      if(!createdUser){ showError(emailStatus,'Start verification first.'); return; }
+      if(!createdUser && auth.currentUser){
+        createdUser = auth.currentUser;
+      }
+      if(!createdUser){ showError(emailStatus,'Start verification first or sign in.'); return; }
       await sendEmailVerification(createdUser);
       showSuccess(emailStatus,'Verification email resent.');
     } catch(err){
@@ -756,8 +827,6 @@
         await reload(auth.currentUser);
         emailVerified = !!auth.currentUser.emailVerified;
       } else {
-        // no createdUser in this session (e.g., existing registered account flow)
-        // attempt to reload current user if any
         try { await reload(auth.currentUser); } catch(e){}
         emailVerified = auth.currentUser ? !!auth.currentUser.emailVerified : false;
       }
@@ -787,7 +856,7 @@
     }
   }
 
-  // Finalize application: validate once more, write to Firestore, store local marker, refresh to show summary
+  // Finalize application: validate once more, write to Firestore, store local marker, and immediately show the summary
   finalizeBtn.addEventListener('click', async () => {
     clearNode(finalStatus);
     if(!validateForm()){ showError(finalStatus,'Validation failed — correct fields and try again.'); return; }
@@ -809,15 +878,22 @@
       };
 
       const ref = await addDoc(collection(db, 'applications'), docObj);
-      // save the doc id locally as the device's active application
+      // save the doc id locally as the device's active application + local meta timestamp
       localStorage.setItem(LOCAL_APP_KEY, ref.id);
+      localStorage.setItem(LOCAL_APP_META, JSON.stringify({ createdAt: Date.now() }));
 
-      showSuccess(finalStatus, 'Application submitted. The page will refresh and your application will be shown.');
-      // sign out for safety
+      // show summary immediately
+      await showExistingApplication(ref.id);
+
+      showSuccess(finalStatus, 'Application submitted and recorded. Your request is shown above.');
+
+      // sign out for safety (so verification actions require explicit sign-in next time)
       try{ await signOut(auth); } catch(e){/*ignore*/}
 
-      // short delay to allow UX to register message, then reload to show summary
-      setTimeout(()=> location.reload(), 900);
+      // ensure form is grayed out
+      clientForm.classList.add('grayed');
+      disableFormControls(true);
+
     } catch(err){
       console.error(err);
       showError(finalStatus,'Failed to submit: ' + (err.message || err.code || err));
@@ -829,26 +905,31 @@
   backBtn.addEventListener('click', ()=> {
     verificationArea.style.display = 'none';
     verificationArea.setAttribute('aria-hidden','true');
-    clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus);
+    clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus); clearNode(signinStatus);
     try{ smsCodeInput.value = ''; }catch(e){}
   });
 
-  // Reset clears form and signs out (and clears local session markers only — does not delete stored application)
+  // Reset clears form and signs out (and clears session verification info; does not delete stored application)
   resetBtn.addEventListener('click', async () => {
     clientForm.reset();
-    clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus);
+    clearNode(formMessage); clearNode(emailStatus); clearNode(phoneStatus); clearNode(finalStatus); clearNode(signinStatus);
     verificationArea.style.display = 'none';
     verificationArea.setAttribute('aria-hidden','true');
     smsCodeInput.disabled = true;
     confirmSmsBtn.disabled = true;
     resendSmsBtn.disabled = true;
+    existingAccountPrompt.style.display = 'none';
     try{ await signOut(auth); }catch(e){}
+    togglePhoneBlock();
   });
 
   // live update v_email/v_cell
   [emailEl,cellEl].forEach(el => el && el.addEventListener('input', ()=>{ 
     v_email.textContent = emailEl.value.trim() || '—';
     v_cell.textContent = cellEl.value.trim() || '—';
+    // clear an old existing-account prompt if email changes
+    existingAccountPrompt.style.display = 'none';
+    clearNode(signinStatus);
   }));
 
   // Clean up auth on unload
@@ -912,10 +993,10 @@
   })();
 
   // Utility: if an administrator later marks an application as fulfilled, the user will be allowed to submit a new request.
-  // (Optional admin flow would call updateDoc(doc(db,'applications',id), {fulfilled: true}) externally.)
+  // Also, if an application is older than REQUEST_EXPIRY_DAYS, the client will allow a new submission.
+  // (Admin would call updateDoc(doc(db,'applications',id), {fulfilled: true}) externally.)
 
   // End script
   </script>
 </body>
 </html>
-
